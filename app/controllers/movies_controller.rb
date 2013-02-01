@@ -1,5 +1,6 @@
 class MoviesController < ApplicationController
   helper_method :sort_column
+#  @all_ratings = ['G','PG','PG-13','R']
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -9,7 +10,8 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = ['G','PG','PG-13','R']	
-    @movies = Movie.order(sort_column)
+    @movies = Movie.where(:rating => ratings_chosen).order(sort_column)
+#    @movies = Movie.order(sort_column)
   end
 
   def new
@@ -44,6 +46,12 @@ class MoviesController < ApplicationController
 
 	def sort_column
 		params[:sort] || "title"  # sorts by title by default
+	end
+	
+	def ratings_chosen
+	  @rating_hash = params[:ratings] || @all_ratings
+	  @rating_hash.to_a
+	  #@rating_hash.keys
 	end
 #can add another helper_method for sort direction based on railscasts#228
 end
