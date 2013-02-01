@@ -4,6 +4,7 @@ gem 'rails', '3.1.0'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
+<<<<<<< HEAD
 
 # for Heroku deployment - as described in Ap. A of ELLS book
 group :development, :test do
@@ -13,6 +14,11 @@ end
 group :production do
   gem 'pg'
 end
+=======
+
+gem 'sqlite3'
+
+>>>>>>> 6aae79b8a3fe208d175189f1fed7cb7c9d1555b3
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -32,4 +38,8 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 # To use debugger
+<<<<<<< HEAD
+=======
+gem 'ruby-debug19', :require => 'ruby-debug'
+>>>>>>> 6aae79b8a3fe208d175189f1fed7cb7c9d1555b3
 gem 'haml'
