@@ -1,6 +1,6 @@
 class MoviesController < ApplicationController
   helper_method :sort_column
-#  @all_ratings = ['G','PG','PG-13','R']
+
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -9,9 +9,32 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings = ['G','PG','PG-13','R']	
-    @movies = Movie.where(:rating => ratings_chosen).order(sort_column)
-#    @movies = Movie.order(sort_column)
+    if params[:commit] == 'Refresh'
+      session[:ratings] = params[:ratings]
+    elsif session[:ratings] != params[:ratings]
+      redirect = true
+      params[:ratings] = session[:ratings]
+    end
+    if params[:orderby]
+      session[:orderby] = params[:orderby]
+    elsif session[:orderby]
+      redirect = true
+      params[:orderby] = session[:orderby]
+    end
+    @ratings, @orderby = session[:ratings], session[:orderby]
+    if redirect
+      redirect_to movies_path({:orderby=>@orderby, :ratings => @ratings})
+    elsif 
+      columns = {'title'=>'title', 'release_date'=>'release_date'}
+      if columns.has_key?(@orderby)
+        query = Movie.order(columns[@orderby])
+      else
+        @orderby = nil
+        query = Movie
+      end
+      @movies = @ratings.nil? ? query.all : query.find_all_by_rating(@ratings.map {|r| r[0] })
+      @all_ratings = Movie.ratings
+    end
   end
 
   def new
@@ -49,9 +72,9 @@ class MoviesController < ApplicationController
 	end
 	
 	def ratings_chosen
-	  @rating_hash = params[:ratings] || @all_ratings
+	  @rating_hash = params[:ratings] || @current_ratings ||@all_ratings
+	  @current_ratings = @rating_hash
 	  @rating_hash.to_a
-	  #@rating_hash.keys
 	end
 #can add another helper_method for sort direction based on railscasts#228
 end
